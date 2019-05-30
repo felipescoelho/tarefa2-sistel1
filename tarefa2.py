@@ -4,17 +4,21 @@
 # date: 30/05/2019
 
 # Material classifier:
-from pprint import pprint as print
+# from pprint import pprint as print
+import numpy as np
+import matplotlib.pyplot as plt
 import MaterialClass
 
 
-# print('Digite o valor da permissividade:')
-# permt = float(input())
-# print('Digite o valor da permeabilidade:')
-# permb = float(input())
-# print('Digite o valor da condutância:')
-# condt = float(input())
+print('Digite o valor da permissividade:')
+permt = float(input())
+print('Digite o valor da permeabilidade:')
+permb = float(input())
+print('Digite o valor da condutância:')
+condt = float(input())
 
-# j = MaterialClass.Material(permt, permb, condt)
+j = MaterialClass.Material(permt, permb, condt)
 
-print(MaterialClass.Material(1,2,3))
+plt.figure()
+plt.plot(j.response)
+plt.show()

@@ -2,7 +2,7 @@
 # Aluno: Luiz Felipe da S. Coelho
 # file name: 
 # Date: 30/05/2019
-
+import numpy as np
 # Defining the material class:
 
 class Material:
@@ -12,10 +12,17 @@ class Material:
         self._permeabilty = permeability
         self._conductivity = conductivity
 
-        self.response = permeability**2
+        # Defining the frequecy axis:
+        f_i = 10e3
+        f_f = 10e9
+        frequencies = np.arange(f_i, f_f+1, 1e3)
+        
+        # Calculating the parameter:
+        parameter = conductivity/(2*np.pi*frequencies*permittivity)
+        self.response = parameter
 
     def __repr__(self):
-        return 'hdshas'
+        return ''
     # @classmethod
     # def Permittivity(self, value):
     #     pass
