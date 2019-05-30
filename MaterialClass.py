@@ -16,16 +16,18 @@ class Material:
         f_i = 10e3
         f_f = 10e9
         frequencies = np.arange(f_i, f_f+1, 1e3)
-        
+
         # Calculating the parameter:
-        parameter = conductivity/(2*np.pi*frequencies*permittivity)
-        self.response = parameter
+        parameter = calc_parameter()
+
 
     def __repr__(self):
         return ''
-    # @classmethod
-    # def Permittivity(self, value):
-    #     pass
+
+        @classmethod
+        def calc_parameter(cls, parameter):
+            parameter = conductivity/(2*np.pi*frequencies*permittivity)
+            return cls(conductivity/(2*np.pi*frequencies*permittivity))
 
     # @classmethod
     # def Permeability(self, value):
