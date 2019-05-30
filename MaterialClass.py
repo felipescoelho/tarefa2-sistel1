@@ -6,10 +6,24 @@
 # Defining the material class:
 
 class Material:
-    def __init__(self):
-        pass
+    def __init__(self, permittivity, permeability, conductivity):
 
-    @classmethod
-    def soma(self, a, b):
-        return a+b
+        self._permittivity = permittivity
+        self._permeabilty = permeability
+        self._conductivity = conductivity
 
+        self.response = permeability**2
+
+    def __repr__(self):
+        return 'hdshas'
+    # @classmethod
+    # def Permittivity(self, value):
+    #     pass
+
+    # @classmethod
+    # def Permeability(self, value):
+    #     pass
+
+    # @classmethod
+    # def Conductivity(self, value):
+    #     pass

@@ -4,16 +4,17 @@
 # date: 30/05/2019
 
 # Material classifier:
-
+from pprint import pprint as print
 import MaterialClass
 
 
-print('Digite o valor da permissividade:')
-perms = float(input())
-print('Digite o valor da permeabilidade:')
-permb = float(input())
-print('Digite o valor da condutância:')
-condt = float(input())
-print(perms + permb + condt)
-da = 5
-fuck ='yes'
+# print('Digite o valor da permissividade:')
+# permt = float(input())
+# print('Digite o valor da permeabilidade:')
+# permb = float(input())
+# print('Digite o valor da condutância:')
+# condt = float(input())
+
+# j = MaterialClass.Material(permt, permb, condt)
+
+print(MaterialClass.Material(1,2,3))
