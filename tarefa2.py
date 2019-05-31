@@ -11,21 +11,25 @@ import MaterialClass
 
 print('Gostaria de digitar as características do meio ou de selecionar \
 um material?')
-resp = set(str(input()).split(' '))
-resp_carac = set(('digitar características meio caracteristicas \
-caracteristica').split(' '))
-resp_mat = 'material'
-for resp in resp_carac:
-    print('Digite o valor da permissividade:')
-    permt = float(input())
-    print('Digite o valor da permeabilidade:')
-    permb = float(input())
-    print('Digite o valor da condutância:')
-    condt = float(input())
+resp = str(input()).split(' ')
+resp_carac = ('digitar características meio caracteristicas \
+caracteristica').split(' ')
+resp_mat = ['material']
+for w in resp:
+    if w in resp_carac:
+        print('Digite o valor da permissividade:')
+        permt = float(input())
+        print('Digite o valor da permeabilidade:')
+        permb = float(input())
+        print('Digite o valor da condutância:')
+        condt = float(input())
+        break
+    elif w in resp_mat:
+        print('Gostaria das especificações para água doce, água salgada, \
+            ar ou concreto?')
+    else:
+        print('Por favor tente novamente com outras palavras.')
 
-for resp in resp_mat:
-    print('Gostaria das especificações para água doce, água salgada, \
-ar ou concreto?')
 
 data = MaterialClass.Material(permt, permb, condt)
 
