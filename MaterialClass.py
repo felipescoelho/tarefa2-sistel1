@@ -1,38 +1,24 @@
 # -------- Segunda Tarefa de Sistemas de Telecomunicações 1 ----------
 # Aluno: Luiz Felipe da S. Coelho
-# file name: 
+# file name: MaterialClass.py
 # Date: 30/05/2019
+
+
 import numpy as np
-# Defining the material class:
+
 
 class Material:
+    """
+    Classifies the material and organizes all the important data for the
+    tarefa2.py script.
+    """
     def __init__(self, permittivity, permeability, conductivity):
+        self._prmttvty = permittivity
+        self._prmblty = permeability
+        self._cdvty = conductivity
+        self.freqsAxis = np.arange(10e3, 10e9 + 1, 1e3)  # frequency range
 
-        self._permittivity = permittivity
-        self._permeabilty = permeability
-        self._conductivity = conductivity
-
-        # Defining the frequecy axis:
-        f_i = 10e3
-        f_f = 10e9
-        frequencies = np.arange(f_i, f_f+1, 1e3)
-
-        # Calculating the parameter:
-        parameter = calc_parameter()
-
-
-    def __repr__(self):
-        return ''
-
-        @classmethod
-        def calc_parameter(cls, parameter):
-            parameter = conductivity/(2*np.pi*frequencies*permittivity)
-            return cls(conductivity/(2*np.pi*frequencies*permittivity))
-
-    # @classmethod
-    # def Permeability(self, value):
-    #     pass
-
-    # @classmethod
-    # def Conductivity(self, value):
-    #     pass
+    def calc_parameter(self):
+        """ Returns the parameter for the medium classification """
+        parmtr = self._cdvty/(2*np.pi*self.freqsAxis*self._prmttvty)
+        return parmtr
