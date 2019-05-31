@@ -1,6 +1,6 @@
 # tarefa2-sistel1
 Make a program that will receive the permittivity, permeability and conductivity of a material and answers:
-* The material classification as conductor, dielectric or almost conductor as a function of its frequency in a graphical format.
+* The material classification as conductor, dielectric or almost conductor as a function of its frequency in a graphical format. [OK]
 * The graphics from the atenuation factor and the phashe factor in function of the frequency.
 * Make the same for the medium impedance, the propagation speed, the group speed, the shifting speed and the medium dispersion.
 * Test those programs with relevant data for tap water, salted water, air and concrete (search for those permeabilities, permittivities and conductivities). Use the results for alanising those materials.
