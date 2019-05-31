@@ -1,4 +1,4 @@
-# -------- Segunda Tarefa de Sistemas de Telecomunicações 1 ----------
+# ------------- Segunda Tarefa de Sistemas de Telecomunicações 1 -------------
 # Aluno: Luiz Felipe da S. Coelho
 # file name: tarefa2.py
 # date: 30/05/2019
@@ -6,7 +6,6 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.constants import pi, epsilon_0, mu_0
 import MaterialClass
 
 
@@ -19,7 +18,12 @@ answ_carac = ('digitar características meio caracteristicas \
 caracteristica característica').split(' ')
 answ_mat = ['material']
 # ----------------------------------------------------------------------------
-# Other questions:
+# A question for specifying the frequency axis:
+print('O eixo de frequências vai de 10 kHz à 10 GHz, quantos pontos você \
+gostaria de ter? (Lembre das limitações de seu computador)')
+samples = int(input())
+hops = (10e9 - 10e3)/samples
+# ----------------------------------------------------------------------------
 # Specify the medium characteristics:
 for w in answ:
     if w in answ_carac:
@@ -39,15 +43,14 @@ ar ou concreto?')
         for possibility in possible_answ:
             if possibility in answ_medium:
                 i = possible_answ.index(possibility)
-                print(i)
                 if i == 0:  # freshwater
                     permt = 80.2
                     permb = .999994
                     condt = 5e-3
                     break
                 if i == 1:  # seawater
-                    permt = 1
-                    permb = 2
+                    permt = 80
+                    permb = 1
                     condt = 4.8
                     break
                 if i == 2:  # air
@@ -63,17 +66,30 @@ ar ou concreto?')
     else:
         print('Por favor tente novamente com outras palavras.')
 
-# A question for specifying the frequency axis:
-print('O eixo de frequências vai de 10 kHz à 10 GHz, quantos pontos você \
-gostaria de ter? (Lembre das limitações de seu computador)')
-samples = int(input())
-hops = (10e9 - 10e3)/samples
+data = MaterialClass.Material(permt, permb, condt, hops)
 
-data = MaterialClass.Material(permt*epsilon_0, permb*mu_0, condt, hops)
-
-cond, diel, lossy = data.classif()
+f_o, cond_ax, diel_ax, lossy_ax = data.classif()
 
 plt.figure()
-plt.plot(data.freqsAxis, cond, 'r', data.freqsAxis, diel, 'b', data.freqsAxis,
-         lossy, 'g')
+plt.plot(cond_ax, f_o, 'r', label='Condutor')
+plt.plot(diel_ax, f_o, 'b', label='Dieletrico')
+plt.plot(lossy_ax, f_o, 'g', label='Quase Condutor')
+plt.axis([1e4, 1e10, .9*np.min(f_o), 1.1*np.max(f_o)])
+plt.legend()
+plt.grid()
+plt.xlabel('Frequência [Hz]')
+plt.ylabel('Frequência Crítica [Hz]')
+plt.title('Classificação do Meio')
+
+gamma = data.propagation_factor()
+alpha = gamma.real
+aplha_dB = -20*np.log10(np.exp(-alpha))
+
+plt.figure()
+plt.semilogx(data.freqsAxis, aplha_dB)
+plt.axis([1e4, 1e10, .9*np.min(aplha_dB), 1.1*np.max(aplha_dB)])
+plt.grid(which='both')
+plt.xlabel('Frequência [Hz]')
+plt.ylabel('Atenuação do Meio [dB/m]')
+plt.title('Atenuação do Meio')
 plt.show()
