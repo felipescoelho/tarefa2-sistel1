@@ -9,6 +9,13 @@ import matplotlib.pyplot as plt
 import MaterialClass
 
 
+# A question for specifying the frequency axis:
+print('O eixo de frequências vai de 10 kHz à 10 GHz, quantos pontos você \
+gostaria de ter? (Lembre das limitações de seu computador)')
+samples = int(input())
+hops = (10e9 - 10e3)/samples
+# ----------------------------------------------------------------------------
+# Question the user's purpose:
 print('Gostaria de digitar as características do meio ou de selecionar \
 um material?')
 answ = str(input()).split(' ')
@@ -17,12 +24,6 @@ answ = str(input()).split(' ')
 answ_carac = ('digitar características meio caracteristicas \
 caracteristica característica').split(' ')
 answ_mat = ['material']
-# ----------------------------------------------------------------------------
-# A question for specifying the frequency axis:
-print('O eixo de frequências vai de 10 kHz à 10 GHz, quantos pontos você \
-gostaria de ter? (Lembre das limitações de seu computador)')
-samples = int(input())
-hops = (10e9 - 10e3)/samples
 # ----------------------------------------------------------------------------
 # Specify the medium characteristics:
 for w in answ:
@@ -64,7 +65,10 @@ ar ou concreto?')
                     condt = 1e-4
                     break
     else:
-        print('Por favor tente novamente com outras palavras.')
+        try:
+            pass
+        except NameError:
+            print('Por favor tente novamente com outras palavras.')
 
 data = MaterialClass.Material(permt, permb, condt, hops)
 
@@ -77,19 +81,29 @@ plt.plot(lossy_ax, f_o, 'g', label='Quase Condutor')
 plt.axis([1e4, 1e10, .9*np.min(f_o), 1.1*np.max(f_o)])
 plt.legend()
 plt.grid()
-plt.xlabel('Frequência [Hz]')
-plt.ylabel('Frequência Crítica [Hz]')
-plt.title('Classificação do Meio')
+plt.xlabel('Frequência [Hz]', size=20)
+plt.ylabel('Frequência Crítica [Hz]', size=20)
+plt.title('Classificação do Meio', size=25)
 
 gamma = data.propagation_factor()
 alpha = gamma.real
+beta = gamma.imag
 aplha_dB = -20*np.log10(np.exp(-alpha))
+beta_deg = 180*beta/np.pi
 
 plt.figure()
-plt.semilogx(data.freqsAxis, aplha_dB)
-plt.axis([1e4, 1e10, .9*np.min(aplha_dB), 1.1*np.max(aplha_dB)])
-plt.grid(which='both')
-plt.xlabel('Frequência [Hz]')
-plt.ylabel('Atenuação do Meio [dB/m]')
-plt.title('Atenuação do Meio')
+aten = plt.subplot(121)
+aten.semilogx(data.freqsAxis, aplha_dB)
+aten.set_xlabel('Frequência [Hz]', size=20)
+aten.set_ylabel('Atenuação [dB/m]', size=20)
+aten.set_title('Atenuação do Meio', size=25)
+aten.axis([1e4, 1e10, .9*np.min(aplha_dB), 1.1*np.max(aplha_dB)])
+aten.grid(which='both')
+phas = plt.subplot(122)
+phas.semilogx(data.freqsAxis, beta_deg)
+phas.set_xlabel('Frequência [Hz]', size=20)
+phas.set_ylabel('Defasagem [°/m]', size=20)
+phas.set_title('Defasagem do Meio', size=25)
+phas.axis([1e4, 1e10, .9*np.min(beta_deg), 1.1*np.max(beta_deg)])
+phas.grid(which='both')
 plt.show()
