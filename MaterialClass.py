@@ -71,11 +71,15 @@ class Material:
 
     @classmethod
     def phase_velocity(self, freq_ang, phase_shift):
+        """ Return the phase velocity of an electromagnetic wave in the given
+        medium """
         return freq_ang/phase_shift
 
     @classmethod
     def group_velocity(self, freq_ang, permittivity, permeability,
                        conductivity, prop_factor):
+        """ Return the group velocity of an electromagnetic wave in the given
+        medium """
         num = -2*freq_ang*permeability*permittivity + \
             1j*permeability*conductivity
         den = 2*prop_factor
@@ -84,7 +88,32 @@ class Material:
         return 1/dummy2
 
     @classmethod
-    def nrj_shift(self, phi_eta, permittivity, abs_eta, permeability):
+    def energy_transfer_velocity(self, phi_eta, permittivity, abs_eta,
+                                 permeability):
+        """ Returns the energy transfer velocity of an electromagnetic wave in
+        the given medium """
         num = 2*np.cos(phi_eta)
         den = permittivity*abs_eta + permeability/abs_eta
         return num/den
+
+    @classmethod
+    def dispersion(self, v_g, v_p, freq):
+        """ Returns the medium dispersion as a function of the frequency """
+        ln = len(v_g)
+        disp = np.zeros(ln)
+        for i in range(ln):
+            if v_g[i] < v_p[i]:
+                disp[i] = 0
+            elif v_g[i] > v_p[i]:
+                disp[i] = 1
+            else:
+                disp[i] = 2
+        # Creating mask:
+        disp_norm_mask = disp != 0
+        disp_anom_mask = disp != 1
+        non_disp_mask = disp != 2
+        # Applying mask:
+        disp_norm = ma.masked_array(freq, disp_norm_mask)
+        disp_anom = ma.masked_array(freq, disp_anom_mask)
+        non_disp = ma.masked_array(freq, non_disp_mask)
+        return disp_norm, disp_anom, non_disp

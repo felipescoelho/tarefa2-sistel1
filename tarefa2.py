@@ -17,13 +17,13 @@ hops = (10e9 - 10e3)/samples
 # ----------------------------------------------------------------------------
 # Question the user's purpose:
 print('Gostaria de digitar as características do meio ou de selecionar \
-um meio?')
+um meio predefinido?')
 answ = str(input()).split(' ')
 # ----------------------------------------------------------------------------
 # List with possible answers:
 answ_carac = ('digitar características caracteristicas \
 caracteristica característica').split(' ')
-answ_mat = ['selecionar']
+answ_mat = ('selecionar predefinido').split(' ')
 # ----------------------------------------------------------------------------
 # Specify the medium characteristics:
 for w in answ:
@@ -72,6 +72,7 @@ ar ou concreto?')
 
 data = MaterialClass.Material(permt, permb, condt, hops)
 
+# Part 1 -- Medium Classification:
 f_o, cond_ax, diel_ax, lossy_ax = data.classif()
 
 plt.figure()
@@ -85,6 +86,7 @@ plt.xlabel('Frequência [Hz]', size=20)
 plt.ylabel('Frequência Crítica [Hz]', size=20)
 plt.title('Classificação do Meio', size=25)
 
+# Part 2 -- Attenuation and Phase Shift:
 gamma = data.propagation_factor()
 alpha = gamma.real
 beta = gamma.imag
@@ -114,20 +116,28 @@ phas.set_title('Defasagem do Meio', size=25)
 phas.axis([1e4, 1e10, 1.1*np.min(beta_deg), 1.1*np.max(beta_deg)])
 phas.grid(which='both')
 
+# Part 3 -- Impedance, Velocities and Dispersion:
 md_imp = data.medium_impedance()
-phi_eta = md_imp.angle
-abs_eta = md_imp.absolute
-phase_speed = data.phase_velocity(data.freq_ang, beta)
-group_speed = data.group_velocity(data.freq_ang, data.permitt, data.permeab,
-                                  data.conduct, gamma)
-energy_shift = data.nrj_shift(phi_eta, data.permitt, abs_eta, data.permeab)
+phi_eta = np.angle(md_imp)
+abs_eta = np.absolute(md_imp)
+phase_vel = data.phase_velocity(data.freq_ang, beta)
+group_vel = data.group_velocity(data.freq_ang, data.permitt, data.permeab,
+                                data.conduct, gamma)
+energy_transf = data.energy_transfer_velocity(phi_eta, data.permitt, abs_eta,
+                                              data.permeab)
+norm_disp, anorm_disp, non_disp = data.dispersion(group_vel, phase_vel,
+                                                  data.freqsAxis)
 
 plt.figure()
-plt.plot(phase_speed)
+plt.plot(phase_vel)
 
 plt.figure()
-plt.plot(group_speed)
+plt.plot(group_vel)
 
 plt.figure()
-plt.plot(energy_shift)
+plt.plot(energy_transf)
+
+plt.figure()
+plt.plot(norm_disp, data.freqsAxis, 'r', anorm_disp, data.freqsAxis, 'b',
+         non_disp, data.freqsAxis, 'g')
 plt.show()
