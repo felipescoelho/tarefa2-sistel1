@@ -6,7 +6,7 @@
 
 import numpy as np
 import numpy.ma as ma
-from scipy.constants import pi, epsilon_0, mu_0
+from scipy.constants import pi, epsilon_0, mu_0, e
 
 
 class Material:
@@ -117,3 +117,10 @@ class Material:
         disp_anom = ma.masked_array(freq, disp_anom_mask)
         non_disp = ma.masked_array(freq, non_disp_mask)
         return disp_norm, disp_anom, non_disp
+
+    @classmethod
+    def penetration(self, alpha):
+        """ Returns the penetration in meters of a wave till it is attenuated
+        in 3dB """
+        den = 20*alpha*np.log10(np.exp(1))
+        return 3/den
