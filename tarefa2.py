@@ -17,13 +17,13 @@ hops = (10e9 - 10e3)/samples
 # ----------------------------------------------------------------------------
 # Question the user's purpose:
 print('Gostaria de digitar as características do meio ou de selecionar \
-um material?')
+um meio?')
 answ = str(input()).split(' ')
 # ----------------------------------------------------------------------------
 # List with possible answers:
-answ_carac = ('digitar características meio caracteristicas \
+answ_carac = ('digitar características caracteristicas \
 caracteristica característica').split(' ')
-answ_mat = ['material']
+answ_mat = ['selecionar']
 # ----------------------------------------------------------------------------
 # Specify the medium characteristics:
 for w in answ:
@@ -67,7 +67,7 @@ ar ou concreto?')
     else:
         try:
             pass
-        except NameError:
+        except NameError:  # need help with this...
             print('Por favor tente novamente com outras palavras.')
 
 data = MaterialClass.Material(permt, permb, condt, hops)
@@ -90,6 +90,13 @@ alpha = gamma.real
 beta = gamma.imag
 aplha_dB = -20*np.log10(np.exp(-alpha))
 beta_deg = 180*beta/np.pi
+# The graphical representation would get fucked with the normalization...
+# lx, = beta_deg.shape
+# for i in range(lx):
+#     while beta_deg[i] > 90:
+#         beta_deg[i] = beta_deg[i] - 180
+#     while beta_deg[i] < -90:
+#         beta_deg[i] = beta_deg[i] + 180
 
 plt.figure()
 aten = plt.subplot(121)
@@ -97,13 +104,30 @@ aten.semilogx(data.freqsAxis, aplha_dB)
 aten.set_xlabel('Frequência [Hz]', size=20)
 aten.set_ylabel('Atenuação [dB/m]', size=20)
 aten.set_title('Atenuação do Meio', size=25)
-aten.axis([1e4, 1e10, .9*np.min(aplha_dB), 1.1*np.max(aplha_dB)])
+aten.axis([1e4, 1e10, 1.2*np.min(aplha_dB), 1.2*np.max(aplha_dB)])
 aten.grid(which='both')
 phas = plt.subplot(122)
 phas.semilogx(data.freqsAxis, beta_deg)
 phas.set_xlabel('Frequência [Hz]', size=20)
 phas.set_ylabel('Defasagem [°/m]', size=20)
 phas.set_title('Defasagem do Meio', size=25)
-phas.axis([1e4, 1e10, .9*np.min(beta_deg), 1.1*np.max(beta_deg)])
+phas.axis([1e4, 1e10, 1.1*np.min(beta_deg), 1.1*np.max(beta_deg)])
 phas.grid(which='both')
+
+md_imp = data.medium_impedance()
+phi_eta = md_imp.angle
+abs_eta = md_imp.absolute
+phase_speed = data.phase_velocity(data.freq_ang, beta)
+group_speed = data.group_velocity(data.freq_ang, data.permitt, data.permeab,
+                                  data.conduct, gamma)
+energy_shift = data.nrj_shift(phi_eta, data.permitt, abs_eta, data.permeab)
+
+plt.figure()
+plt.plot(phase_speed)
+
+plt.figure()
+plt.plot(group_speed)
+
+plt.figure()
+plt.plot(energy_shift)
 plt.show()

@@ -19,6 +19,7 @@ class Material:
         self.permeab = permeability*mu_0
         self.conduct = conductivity
         self.freqsAxis = np.arange(10e3, 10e9 + 1, hops)  # frequency range
+        self.freq_ang = 2*pi*self.freqsAxis
 
     def classif(self):
         """ Returns the medium classification according to the eletromagnetic
@@ -58,7 +59,32 @@ class Material:
     def propagation_factor(self):
         """ Returns the propagation factor as a complex number in the
         rectangular representation """
-        freq_ang = 2*pi*self.freqsAxis
-        gamma = np.sqrt(1j*2*pi*freq_ang*self.permeab*(self.conduct +
-                        1j*freq_ang*self.permitt))
+        gamma = np.sqrt(1j*2*pi*self.freq_ang*self.permeab*(self.conduct +
+                        1j*self.freq_ang*self.permitt))
         return gamma
+
+    def medium_impedance(self):
+        """ Returns the medum impedance """
+        eta = np.sqrt(1j*self.freq_ang*self.permeab/(self.conduct + 1j *
+                      self.freq_ang*self.permitt))
+        return eta
+
+    @classmethod
+    def phase_velocity(self, freq_ang, phase_shift):
+        return freq_ang/phase_shift
+
+    @classmethod
+    def group_velocity(self, freq_ang, permittivity, permeability,
+                       conductivity, prop_factor):
+        num = -2*freq_ang*permeability*permittivity + \
+            1j*permeability*conductivity
+        den = 2*prop_factor
+        dummy1 = num/den
+        dummy2 = dummy1.imag
+        return 1/dummy2
+
+    @classmethod
+    def nrj_shift(self, phi_eta, permittivity, abs_eta, permeability):
+        num = 2*np.cos(phi_eta)
+        den = permittivity*abs_eta + permeability/abs_eta
+        return num/den
